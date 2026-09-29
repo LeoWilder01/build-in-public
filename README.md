@@ -4,13 +4,13 @@ A durable archive of what I build, learn, decide, and complete. Updates capture 
 
 ## One record, multiple views
 
-Each atomic record lives once in `records/YYYY/YYYY-MM-DD-short-slug.md`, with YAML metadata and a short Markdown body. A future website can read those files to produce:
+Each day has at most one Markdown file at `records/YYYY/YYYY-MM-DD.md`. Its YAML front matter contains an `entries` list: each entry has concise `text`, an optional `project`, and reusable `topics`. The filename supplies the capture date. Multiple checkpoints on the same day append to the same file; days without new records have no file. A future website can read those entries to produce:
 
 - A timeline ordered by date.
 - Project pages grouped by the optional project identifier.
 - Learning and topic pages filtered by reusable topic labels.
 
-The records are the source of truth. Views and indexes should be generated, not maintained as separate copies. No website framework or database service is required yet.
+The records on GitHub are the source of truth. Prefer reading and committing through the GitHub connector; a local checkout is an optional working copy, not a second archive. Views and indexes should be generated, not maintained as separate copies. No website framework or database service is required yet.
 
 ## Repository layout
 
@@ -26,7 +26,7 @@ Ask Codex to checkpoint meaningful progress from the available working context, 
 
 When working elsewhere, explicitly ask Codex to read this repository's AGENTS.md and save the checkpoint here. Provide any context or evidence it cannot access.
 
-A checkpoint normally adds one or two atomic records, and may add none. Completed changes, reusable findings, and decisions actually made belong here. Plans, activity lists, and session recaps do not.
+A checkpoint normally appends one or two atomic entries to the daily file, and may add none. One file per day does not mean one claim per day. Completed changes, reusable findings, and decisions actually made belong here. Plans, activity lists, and session recaps do not.
 
 Projects emerge from the work: reuse identifiers already in the archive, introduce one only for a distinct ongoing workstream, and omit it when none fits. Topics are a small shared vocabulary across projects.
 
