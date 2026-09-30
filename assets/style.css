@@ -1,0 +1,18 @@
+:root { color-scheme: light; font-family: system-ui, sans-serif; color: #222; background: #fff; }
+body { margin: 0; font-size: 16px; line-height: 1.65; }
+main { max-width: 800px; margin: 48px auto; padding: 0 24px; }
+h1 { font-size: 28px; margin-bottom: 8px; }
+h2 { font-size: 20px; margin: 28px 0 12px; }
+header p { margin: 0 0 8px; }
+a { color: inherit; text-underline-offset: 3px; }
+form { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 28px 0 16px; }
+label { display: flex; flex-direction: column; gap: 4px; flex: 1 1 150px; }
+label:first-child { flex-basis: 100%; }
+input, select, button { box-sizing: border-box; min-height: 40px; padding: 7px 9px; border: 1px solid #aaa; border-radius: 3px; background: #fff; color: inherit; font: inherit; max-width: 100%; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid #333; outline-offset: 3px; }
+#status, .metadata { color: #555; font-size: 14px; }
+article { padding: 14px 0; border-bottom: 1px solid #ddd; overflow-wrap: anywhere; }
+article p { margin: 0 0 6px; white-space: pre-wrap; }
+.metadata { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+@media (max-width: 480px) { main { margin: 24px auto; padding: 0 16px; } label { flex-basis: 100%; } }

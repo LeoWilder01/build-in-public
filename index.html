@@ -1,0 +1,41 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build in Public</title>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}">
+  <script src="{{ '/assets/app.js' | relative_url }}" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Build in Public</h1>
+    <p>构建、学习、决定与完成的记录。</p>
+    <a href="https://github.com/LeoWilder01/build-in-public">GitHub 仓库</a>
+  </header>
+  <form id="filters" role="search">
+    <label>搜索<input id="query" type="search" placeholder="搜索内容、项目或主题"></label>
+    <label>日期<input id="date" type="date"></label>
+    <label>项目<select id="project"><option value="">全部项目</option></select></label>
+    <label>主题<select id="topic"><option value="">全部主题</option></select></label>
+    <button type="reset">清除筛选</button>
+  </form>
+  <p id="status" role="status" aria-live="polite">正在加载记录…</p>
+  <div id="records"></div>
+  <noscript>请启用 JavaScript 以浏览和筛选记录，或直接查看 GitHub 仓库中的 records 文件夹。</noscript>
+</main>
+{% assign days = site.pages | where_exp: 'item', 'item.path contains "records/"' | sort: 'path' | reverse %}
+{% capture archive %}[
+{% assign separator = '' %}
+{% for day in days %}{% if day.entries %}
+{{ separator }}{"date":{{ day.path | split: '/' | last | remove: '.md' | jsonify }},"entries":{{ day.entries | jsonify }}}
+{% assign separator = ',' %}
+{% endif %}{% endfor %}
+]{% endcapture %}
+<script type="application/json" id="archive">{{ archive | replace: '<', '\u003c' }}</script>
+</body>
+</html>
