@@ -125,6 +125,14 @@ try {
       link.href=`https://github.com/LeoWilder01/build-in-public/blob/main/records/${entry.date.slice(0,4)}/${entry.date}.md`;
       meta.append(link,element('span',entry.project||t.noProject));article.append(meta);parent.append(article);
     }
+    // Rank each folder by its newest matching descendant, not YAML definition order.
+    const newest = new Map();
+    for (const entry of matched) {
+      for (const key of paths.get(entry.context)) {
+        if (!newest.has(key)) newest.set(key, entry.date);
+      }
+    }
+    const recentFolders = keys => keys.sort((a,b)=>(newest.get(b)||'').localeCompare(newest.get(a)||''));
     function folder(key,parent) {
       const subset=matched.filter(e=>paths.get(e.context).includes(key));if(!subset.length)return;
       const details=element('details',undefined,'context-folder');details.open=openFolders.get(key)??true;
@@ -132,10 +140,10 @@ try {
       details.append(summary);
       const body=element('div',undefined,'folder-body');
       subset.filter(e=>e.context===key).forEach(e=>record(e,body));
-      Object.keys(contexts).filter(k=>contexts[k].parent===key).forEach(k=>folder(k,body));
+      recentFolders(Object.keys(contexts).filter(k=>contexts[k].parent===key)).forEach(k=>folder(k,body));
       details.append(body);details.addEventListener('toggle',()=>openFolders.set(key,details.open));parent.append(details);
     }
-    Object.keys(contexts).filter(k=>!contexts[k].parent).forEach(k=>folder(k,container));
+    recentFolders(Object.keys(contexts).filter(k=>!contexts[k].parent)).forEach(k=>folder(k,container));
     matched.filter(e=>!e.context).forEach(e=>record(e,container));
   }
   document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>{
