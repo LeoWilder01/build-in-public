@@ -55,3 +55,13 @@ article p { margin: 0 0 10px; white-space: pre-wrap; }
 .browse.dates-expanded { grid-template-columns:minmax(0,1fr); }
 .browse.dates-expanded form label:first-child { flex:2 1 300px; }
 @media(max-width:600px) { .browse { grid-template-columns:minmax(0,1fr); gap:20px; } }
+
+.browse:not(.dates-expanded) { align-items:stretch; }
+.browse:not(.dates-expanded) #activity { display:flex; flex-direction:column; }
+.browse:not(.dates-expanded) .activity-head { margin:0 0 12px; min-height:23px; align-items:start; }
+.browse:not(.dates-expanded) .activity-head button { padding:0; min-height:23px; font-size:14px; line-height:23px; }
+.browse:not(.dates-expanded) .activity-head { gap:12px; }
+.browse:not(.dates-expanded) .activity-compact { flex:1; grid-template-rows:repeat(7,minmax(0,1fr)); }
+.browse:not(.dates-expanded) .activity-compact .activity-day { height:100%; aspect-ratio:auto; }
+.browse:not(.dates-expanded) form { align-content:space-between; }
+@media(max-width:600px) { .browse:not(.dates-expanded) .activity-compact { flex:none; grid-template-rows:repeat(7,12px); } }

@@ -80,7 +80,6 @@ try {
       const end=new Date(Math.max(Date.now(),...entries.map(e=>Date.parse(e.date+'T00:00:00Z'))));
       const last=Date.UTC(end.getUTCFullYear(),end.getUTCMonth(),end.getUTCDate());
       const start=last-((end.getUTCDay()+6)%7+12*7)*86400000;
-      const range=element('div',`${new Date(start).toISOString().slice(0,10)} — ${new Date(last).toISOString().slice(0,10)}`,'activity-range');activity.prepend(range);
       const grid=element('div',undefined,'activity-compact');
       for(let i=0;i<91;i++){const stamp=start+i*86400000,date=new Date(stamp).toISOString().slice(0,10),count=counts.get(date)||0;const button=element('button',undefined,'activity-day');button.type='button';button.disabled=!count||stamp>last;button.classList.toggle('dense',count>=10);button.setAttribute('aria-pressed',String(selectedDate===date));button.title=`${date} · ${copy[language.value].count(count)}`;button.setAttribute('aria-label',button.title);button.addEventListener('click',()=>{selectedDate=selectedDate===date?'':date;render();});grid.append(button);}
       activity.append(grid);return;
