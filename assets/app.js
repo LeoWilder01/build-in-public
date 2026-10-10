@@ -1,7 +1,7 @@
 'use strict';
 const $ = selector => document.querySelector(selector);
 const form = $('#filters'), query = $('#query');
-const project = $('#project'), language = $('#language');
+const project = $('#project'), language = {value:'en'};
 const status = $('#status'), container = $('#records');
 const copy = {
   en: {subtitle:'Notes on building, learning, decisions, and completed work.',repository:'GitHub repository',search:'Search',date:'Date',project:'Project',context:'Context',reset:'Clear filters',placeholder:'Search notes, projects, or context',allProjects:'All projects',noProject:'No project',allContexts:'All contexts',unknown:'Context not established',empty:'No records yet.',noMatches:'No matching records.',count:n=>`${n} record${n===1?'':'s'}`,error:'Unable to load records. Please read them on GitHub.'},
@@ -40,9 +40,10 @@ try {
   function configure() {
     const t=copy[language.value], previousProject=project.value;
     document.documentElement.lang=language.value==='zh'?'zh-CN':'en';
-    for (const key of ['subtitle','repository','reset']) $('#'+key).textContent=t[key];
+    for (const key of ['repository','reset']) $('#'+key).textContent=t[key];
     for (const key of ['search','project']) $('#'+key+'-label').textContent=t[key];
     query.placeholder=t.placeholder;
+    document.querySelectorAll('[data-language]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.language===language.value)));
     project.replaceChildren(new Option(t.allProjects,''));
     for (const p of projects) project.add(new Option(p,p));
     project.add(new Option(t.noProject,'__none__'));
@@ -50,6 +51,7 @@ try {
     render();
   }
   let selectedDate = '';
+  let expandedDates = false;
   const openFolders = new Map();
   const counts = new Map(days.map(d => [d.date, d.entries.length]));
   let year = Number(entries[0]?.date.slice(0,4) || new Date().getFullYear());
@@ -63,13 +65,25 @@ try {
     activity.setAttribute('aria-label',zh?'记录日期':'Record dates');
     activity.replaceChildren();
     const head=element('div',undefined,'activity-head');
+    if(expandedDates) {
     const years=[...new Set(entries.map(e=>e.date.slice(0,4)))].sort().reverse();
     const label=element('label',zh?'记录年份':'Record year');
     const select=element('select');
     for(const y of years)select.add(new Option(y,y));
-    select.value=String(year); select.addEventListener('change',()=>{year=Number(select.value);calendar();});label.append(select);
-    const clear=element('button',zh?'全部日期':'All dates');clear.type='button';clear.setAttribute('aria-pressed',String(!selectedDate));
-    clear.addEventListener('click',()=>{selectedDate='';render();});head.append(label,clear);activity.append(head);
+    select.value=String(year); select.addEventListener('change',()=>{year=Number(select.value);calendar();});label.append(select);head.append(label);
+    }
+    const clear=element('button',zh?'全部日期':'All dates');clear.type='button';clear.hidden=!selectedDate;clear.setAttribute('aria-pressed',String(!selectedDate));
+    clear.addEventListener('click',()=>{selectedDate='';render();});head.append(clear);
+    const expand=element('button',expandedDates?(zh?'收起日期':'Less dates'):(zh?'所有日期':'All dates…'));expand.type='button';expand.setAttribute('aria-expanded',String(expandedDates));expand.addEventListener('click',()=>{expandedDates=!expandedDates;calendar();});head.append(expand);activity.append(head);
+    if(!expandedDates) {
+      const end=new Date(Math.max(Date.now(),...entries.map(e=>Date.parse(e.date+'T00:00:00Z'))));
+      const last=Date.UTC(end.getUTCFullYear(),end.getUTCMonth(),end.getUTCDate());
+      const start=last-((end.getUTCDay()+6)%7+12*7)*86400000;
+      const range=element('div',`${new Date(start).toISOString().slice(0,10)} — ${new Date(last).toISOString().slice(0,10)}`,'activity-range');activity.prepend(range);
+      const grid=element('div',undefined,'activity-compact');
+      for(let i=0;i<91;i++){const stamp=start+i*86400000,date=new Date(stamp).toISOString().slice(0,10),count=counts.get(date)||0;const button=element('button',undefined,'activity-day');button.type='button';button.disabled=!count||stamp>last;button.classList.toggle('dense',count>=10);button.setAttribute('aria-pressed',String(selectedDate===date));button.title=`${date} · ${copy[language.value].count(count)}`;button.setAttribute('aria-label',button.title);button.addEventListener('click',()=>{selectedDate=selectedDate===date?'':date;render();});grid.append(button);}
+      activity.append(grid);return;
+    }
     const months=element('div',undefined,'activity-months');
     for(let month=0;month<12;month++) {
       const section=element('section',undefined,'activity-month');
@@ -89,14 +103,14 @@ try {
       }
       section.append(grid);months.append(section);
     }
-    activity.append(months,element('p',(zh?'深色表示记录更多；仅有记录的日期可点击。':'Darker cells mean more records; only recorded days are selectable.')+(selectedDate?` ${selectedDate}`:''),'activity-caption'));
+    activity.append(months);
   }
   function render() {
     const t=copy[language.value], term=query.value.trim().toLocaleLowerCase();
     const matched=entries.filter(e=>{
       const chain=paths.get(e.context);
       // Topics deliberately do not participate in filtering, display, or search.
-      const searchable=[e.title.en,e.title.zh,e.text.en,e.text.zh,e.project||'',...chain.flatMap(k=>[contexts[k].label.en,contexts[k].label.zh,contexts[k].description.en,contexts[k].description.zh])].join(' ').toLocaleLowerCase();
+      const searchable=[e.title.en,e.title.zh,e.text.en,e.text.zh,e.project||'',...chain.flatMap(k=>[contexts[k].label.en,contexts[k].label.zh])].join(' ').toLocaleLowerCase();
       return (!selectedDate||e.date===selectedDate) &&
         (!project.value||(project.value==='__none__'?!e.project:e.project===project.value)) &&
         (!term||searchable.includes(term));
@@ -116,7 +130,7 @@ try {
       const details=element('details',undefined,'context-folder');details.open=openFolders.get(key)??true;
       const summary=element('summary');summary.append(element('span',local(contexts[key].label)),element('span',String(subset.length),'folder-count'));
       details.append(summary);
-      const body=element('div',undefined,'folder-body');body.append(element('p',local(contexts[key].description),'context-description'));
+      const body=element('div',undefined,'folder-body');
       subset.filter(e=>e.context===key).forEach(e=>record(e,body));
       Object.keys(contexts).filter(k=>contexts[k].parent===key).forEach(k=>folder(k,body));
       details.append(body);details.addEventListener('toggle',()=>openFolders.set(key,details.open));parent.append(details);
@@ -124,11 +138,12 @@ try {
     Object.keys(contexts).filter(k=>!contexts[k].parent).forEach(k=>folder(k,container));
     matched.filter(e=>!e.context).forEach(e=>record(e,container));
   }
-  language.addEventListener('change',()=>{
+  document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>{
+    language.value=button.dataset.language;
     const url=new URL(location.href);
     if(language.value==='zh')url.searchParams.set('lang','zh');else url.searchParams.delete('lang');
     history.replaceState(null,'',url);configure();
-  });
+  }));
   form.addEventListener('submit',event=>event.preventDefault());
   form.addEventListener('input',render);form.addEventListener('change',render);
   form.addEventListener('reset',()=>{selectedDate='';setTimeout(render,0);});configure();

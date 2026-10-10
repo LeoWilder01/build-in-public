@@ -7,15 +7,14 @@ layout: null
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Build in Public</title>
-  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}?v=3">
-  <script src="{{ '/assets/app.js' | relative_url }}?v=3" defer></script>
+  <link rel="stylesheet" href="{{ '/assets/style.css' | relative_url }}?v=4">
+  <script src="{{ '/assets/app.js' | relative_url }}?v=4" defer></script>
 </head>
 <body>
 <main>
   <header>
     <h1>Build in Public</h1>
-    <p id="subtitle">Notes on building, learning, decisions, and completed work.</p>
-    <label class="language">Language / 语言<select id="language"><option value="en">English</option><option value="zh">中文</option></select></label>
+    <nav class="language" aria-label="Language"><button type="button" data-language="zh" aria-label="中文">ZN</button><button type="button" data-language="en" aria-label="English">EN</button></nav>
     <a href="https://github.com/LeoWilder01/build-in-public" id="repository">GitHub repository</a>
   </header>
   <form id="filters" role="search">
