@@ -62,6 +62,7 @@ try {
   }
   function calendar() {
     const zh=language.value==='zh';
+    $('.browse').classList.toggle('dates-expanded',expandedDates);
     activity.setAttribute('aria-label',zh?'记录日期':'Record dates');
     activity.replaceChildren();
     const head=element('div',undefined,'activity-head');
