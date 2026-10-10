@@ -1,26 +1,42 @@
 # Record format
 
-One file per capture day: `records/YYYY/YYYY-MM-DD.md`. Use the user's timezone, or the environment timezone if unspecified. The filename supplies the date; the year directory must match it. Multiple checkpoints append to the same file. Omit days with no entries.
+One file per capture day: `records/YYYY/YYYY-MM-DD.md`. Use the user's timezone, or the environment timezone if unspecified. The filename supplies the date; multiple checkpoints append to it. Omit empty days.
 
-The complete file is YAML front matter, with no repeated Markdown body:
+The entire file is YAML front matter. Each entry records **one concept or one event**; two independent definitions or outcomes belong in separate entries. Both languages express the same claim, scope, evidence, and uncertainty.
 
 ```yaml
 ---
 entries:
-  - project: example-tool
-    topics: [testing]
-    text: "An empty fixture exposed an unchecked parser assumption; nested input remains unverified."
+  - project: TinyML
+    context: architecture-selection
+    topics: [weight-sharing]
+    title:
+      en: "Once-for-All supports shared-weight subnetworks"
+      zh: "Once-for-All 支持共享权重子网络"
+    text:
+      en: "Once-for-All trains a shared-weight network supporting multiple subnetworks."
+      zh: "Once-for-All 训练一个支持多种子网络的共享权重网络。"
 ---
 ```
 
-This is an example, not an archive entry. `entries` must be a nonempty list. Each entry allows only:
+This is a format example, not a new record. Only these fields are allowed:
 
 | Field | Meaning |
 | --- | --- |
-| `text` | Required nonempty string. Quote it; public HTTPS Markdown links are supported. |
-| `project` | Optional workstream identifier. Reuse existing values; create one only for a distinct ongoing workstream. Omit for standalone work. No fixed project registry. |
-| `topics` | Required list of zero to three broad, reusable labels; use `[]` if none fits. Prefer existing labels, such as `engineering`, `design`, `product`, `research`, `testing`, or `workflow`. Avoid task-specific tags. |
+| `title` | Required `en` and `zh` nonempty strings naming the single concept, question, or outcome. The record title is distinct from its broader context. |
+| `text` | Required `en` and `zh` nonempty strings. Keep each concise; preserve useful public HTTPS Markdown links in both versions. |
+| `project` | Optional exact value from [_data/projects.yml](../_data/projects.yml). The user maintains this list; choose only a clearly fitting existing project, otherwise omit. |
+| `context` | Reference to one scope in [_data/contexts.yml](../_data/contexts.yml). Locate the concept/event within a larger idea or purpose, not just its subject name. Omit only when the source does not establish a defensible scope; never invent the user's goals. |
+| `topics` | Zero to three descriptive kebab-case labels; preserve existing labels and use `[]` when unnecessary. Stored for possible future use, but excluded from website display, filters, and search. |
 
-Use lowercase ASCII kebab-case for project and topic values, consistently across languages. Classify each entry independently. Do not add IDs, kinds, dates, or other fields. If a known earlier event date matters, mention it in `text`; the filename always means capture date.
+## Concrete wording
 
-The website reads daily files, orders dates newest first, and preserves entry order within each day. Project and topic views filter these same entries. Daily file links are stable; individual entries have no permanent identifiers.
+Apply this rule to record text, context labels/descriptions, and website copy in both languages: name the actual objects, quantities, mechanisms, or goals. Each label must be understandable without the originating conversation. Do not hide meaning behind generic words such as “resources,” “constraints,” “information,” or “optimization.” For example, replace “fit models to resource limits” with “reduce neural-network computation, memory use, and inference latency”; explain memory as weights and intermediate activations when relevant. If no concise term covers the scope, list several concrete examples followed by “etc.” / “等” rather than replacing them with a vague umbrella term. Use only examples supported by the source; specificity must not introduce invented facts or goals. Prefer a slightly longer clear phrase over an ambiguous short one.
+
+## Shared context
+
+Each context has a stable key, bilingual `label` and `description`, and an optional `parent` key. The description explains the scope's role in the broader purpose. Parent links must resolve and be acyclic; prefer one or two visible levels. These keys identify shared scopes, not individual records.
+
+Reuse a context while the discussion is solving the same problem, even when new terms appear. Add a scope only for a distinct, reusable discussion; do not create a node per concept or infer a goal merely from a keyword. The same concept can serve different purposes in different conversations. Projects and contexts are independent, so general knowledge can have context without a project. Translate new or changed context labels and descriptions together.
+
+The website displays contexts as nested, collapsible folders, with each description shown once per folder. Records have their own titles; within each folder, dates sort newest first and same-day entry order is preserved. A date activity grid enables only days containing records; its counts reflect the whole archive, while text and project filters narrow the displayed records. English is the default; `?lang=zh` selects Chinese. Search covers titles, both language versions, projects, and context labels/descriptions, never topics. No entry IDs, kinds, duplicated dates, or extra fields are needed.

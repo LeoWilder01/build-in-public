@@ -1,0 +1,101 @@
+---
+cognitive-explanation:
+  label:
+    en: Explaining human judgment
+    zh: 解释人的判断
+  description:
+    en: Use explicit models to examine how people reason under uncertainty.
+    zh: 用明确的模型研究人在不确定性下如何推理。
+bayesian-cognition:
+  label:
+    en: Bayesian accounts of cognition
+    zh: 认知的贝叶斯解释
+  description:
+    en: Priors and likelihoods provide a framework for explaining judgments and evaluating
+      different notions of rationality.
+    zh: 用先验与似然解释判断，并区分不同意义的理性。
+  parent: cognitive-explanation
+resource-efficient-models:
+  label:
+    en: Fitting models to resource limits
+    zh: 让模型适应资源限制
+  description:
+    en: Choose network architectures and convolution operations to reduce multiply-add operations, memory needed for weights and intermediate activations, and time per inference, while evaluating prediction accuracy.
+    zh: 通过选择神经网络的层数、通道数、卷积运算等，减少乘加运算次数、权重与中间激活所需的内存、单次推理耗时，并评估预测准确率。
+architecture-selection:
+  label:
+    en: Selecting neural-network layers, channels, and operations
+    zh: 选择神经网络的层数、通道数和运算等结构配置
+  description:
+    en: Search and weight sharing help compare candidate structures without designing
+      and training every candidate independently.
+    zh: 通过搜索与权重共享比较候选结构，减少逐个设计和独立训练的成本。
+  parent: resource-efficient-models
+efficient-convolution:
+  label:
+    en: Reducing convolution operations and parameter counts
+    zh: 减少卷积的运算量和参数量
+  description:
+    en: Channel structure and bottlenecks explain where convolution spends computation
+      and how it can be reduced.
+    zh: 通过通道结构与瓶颈设计，理解卷积的计算开销从哪里来、如何减少。
+  parent: resource-efficient-models
+model-learning:
+  label:
+    en: Neural-network training and attention computations
+    zh: 神经网络训练与注意力计算
+  description:
+    en: Connect attention's computation of token representations with gradient computation and parameter updates during neural-network training.
+    zh: 理解注意力如何计算 token 表示，以及神经网络训练时如何计算梯度、更新参数。
+gradient-computation:
+  label:
+    en: Obtaining parameter gradients
+    zh: 获得参数梯度
+  description:
+    en: Gradients describe how parameters affect loss; backpropagation computes them
+      efficiently for a computational graph.
+    zh: 梯度描述参数如何影响损失，反向传播则在计算图上高效求出这些梯度。
+  parent: model-learning
+parameter-updates:
+  label:
+    en: Updating model parameters
+    zh: 更新模型参数
+  description:
+    en: Use computed gradients to choose parameter changes intended to reduce loss.
+    zh: 利用已求得的梯度，选择旨在降低损失的参数更新。
+  parent: model-learning
+attention-representations:
+  label:
+    en: Combining token representations with multi-head attention
+    zh: 通过多头注意力整合各个 token 的表示
+  description:
+    en: Multiple attention heads let representations combine information from different
+      positions through learned projections.
+    zh: 多个注意力头通过学到的投影，让表示整合不同位置的信息。
+  parent: model-learning
+strategic-interaction:
+  label:
+    en: Strategy choice and Nash equilibria in multiplayer games
+    zh: 多人博弈中的策略选择与纳什均衡
+  description:
+    en: Understand how a player chooses a strategy when outcomes also depend on other
+      players.
+    zh: 理解当结果也取决于其他参与者时，一个参与者如何选择策略。
+equilibrium-existence:
+  label:
+    en: Proving the existence of mixed-strategy Nash equilibria
+    zh: 证明混合策略纳什均衡的存在性
+  description:
+    en: Fixed-point and combinatorial arguments establish existence; they do not by
+      themselves show that a learning process converges.
+    zh: 通过不动点与组合论证证明均衡存在；这本身不说明学习过程会收敛。
+  parent: strategic-interaction
+equilibrium-computation:
+  label:
+    en: Best responses and maxmin strategies in games
+    zh: 博弈中的最佳回应与 maxmin 策略
+  description:
+    en: Best responses and worst-case guarantees frame strategy choice; linear programming
+      computes maxmin strategies in two-player zero-sum games.
+    zh: 用最佳回应和最坏情形保证理解策略选择，并在线性规划中求两人零和博弈的 maxmin 策略。
+  parent: strategic-interaction
