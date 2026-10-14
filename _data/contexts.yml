@@ -55,3 +55,7 @@ equilibrium-computation:
     en: Best responses and maxmin strategies in games
     zh: 博弈中的最佳回应与 maxmin 策略
   parent: strategic-interaction
+local-web-apps:
+  label:
+    en: Running local visualization webpages and Python backends
+    zh: 运行本地可视化网页与 Python 后端
