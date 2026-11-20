@@ -59,3 +59,8 @@ local-web-apps:
   label:
     en: Running local visualization webpages and Python backends
     zh: 运行本地可视化网页与 Python 后端
+multimodal-vision-encoders:
+  label:
+    en: Choosing image encoders for models that combine images and text
+    zh: 为结合图像和文字的模型选择图像编码器
+  parent: model-learning
